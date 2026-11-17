@@ -96,6 +96,9 @@ input[type=number]{width:5.5rem;padding:.45rem;border:1px solid var(--border);bo
     <button data-v="pruefung">Prüfung</button>
     <button data-v="statistik">Statistik</button>
     <button data-v="einstellungen">Einstellungen</button>
+    <button data-v="rechtliches">Rechtliche Hinweise</button>
+    <button data-v="datenschutz">Datenschutz</button>
+    <button data-v="impressum">Impressum</button>
   </nav>
 </header>
 <main id="app"></main>
@@ -250,10 +253,26 @@ function render(){
   if(state.view==="pruefung")return vPruefung();
   if(state.view==="statistik")return vStatistik();
   if(state.view==="einstellungen")return vEinst();
+  if(state.view==="rechtliches"||state.view==="datenschutz"||state.view==="impressum")return vLegal(state.view);
 }
+const LEGAL={
+rechtliches:`<h2>Rechtliche Hinweise</h2>
+  <p>Diese Lern-App ist ein privates Übungsangebot zur Vorbereitung auf die Sachkundeprüfung nach § 11 TierSchG. Sie erhebt keinen Anspruch auf Vollständigkeit und Richtigkeit und ersetzt keine amtlichen Informationen und nicht die Prüfung selbst. Maßgeblich sind ausschließlich die Vorgaben des zuständigen Veterinäramts.</p>
+  <p>Der verwendete Fragenkatalog basiert auf dem Fragenkatalog zur Sachkundeprüfung nach der Gefahrenabwehrverordnung über das Halten und Führen von Hunden in Hessen (HundeVO vom 22.01.2003, Stand 07.02.2003). Die Abbildungen sind eigene, nachgezeichnete Illustrationen und keine amtlichen Originale.</p>`,
+datenschutz:`<h2>Datenschutz</h2>
+  <p>Diese Seite ist eine rein statische Website und läuft vollständig in deinem Browser. Es werden keine Server-Kontakte mit personenbezogenen Daten hergestellt, keine Cookies gesetzt und keine Tracker oder Analyse-Werkzeuge eingesetzt.</p>
+  <p>Dein Lernstand, dein gewähltes Design und die Prüfungseinstellungen werden ausschließlich lokal im Speicher deines Browsers (localStorage) auf deinem Gerät gehalten. Sie verlassen dein Gerät nicht und können über die Funktion "Lernstand zurücksetzen" oder durch Löschen der Website-Daten in deinen Browsereinstellungen jederzeit gelöscht werden.</p>
+  <p>Beim Aufruf der Seite verarbeitet der Hosting-Anbieter (GitHub Pages, GitHub Inc., USA) technisch notwendige Zugriffsdaten gemäß dessen Datenschutzerklärung. Für die Inhalte dieser Seite ist die im Impressum genannte Person verantwortlich.</p>`,
+impressum:`<h2>Impressum</h2>
+  <p>Angaben gemäß § 5 DDG:</p>
+  <p>[Vor- und Nachname]<br>[Straße und Hausnummer]<br>[PLZ und Ort]<br>[E-Mail-Adresse]</p>
+  <p>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br>[Vor- und Nachname, Anschrift wie oben]</p>
+  <p class="tag">Platzhalter in eckigen Klammern vor Veröffentlichung ersetzen.</p>`};
+function vLegal(v){app.innerHTML=`<div class="card">${LEGAL[v]}</div>`;}
 function vStart(){
   app.innerHTML=`<div class="hero">
-  <svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.4"/><circle cx="12" cy="5" r="2.4"/><circle cx="17" cy="7" r="2.4"/><ellipse cx="12" cy="14.5" rx="5.5" ry="4.6"/></svg>
+  <img src="assets/hero.png" alt="animus canis" style="max-width:min(420px,90%);border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.12)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+  <svg viewBox="0 0 24 24" style="display:none"><circle cx="7" cy="7" r="2.4"/><circle cx="12" cy="5" r="2.4"/><circle cx="17" cy="7" r="2.4"/><ellipse cx="12" cy="14.5" rx="5.5" ry="4.6"/></svg>
   <h2>animus canis</h2>
   <p>Wesenstest-Training für die Sachkundeprüfung nach § 11 TierSchG in Hessen</p>
   <div class="row" style="justify-content:center">
