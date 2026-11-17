@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>animus canis – Sachkundeprüfung Hessen</title>
+<style>
+:root{
+  --bg:#faf7f0; --card:#ffffff; --txt:#1d3a2f; --muted:#6b7f76;
+  --accent:#1d5c3f; --accent2:#e0a52e; --ok:#2e7d4f; --bad:#b3402e;
+  --border:#e4ddcf; --glow:none; --radius:14px;
+}
+body[data-theme="pastell"]{
+  --bg:#fdf6f8; --card:#ffffff; --txt:#5a4a6a; --muted:#9a8bab;
+  --accent:#c98bb9; --accent2:#f0c987; --ok:#8fc7a2; --bad:#e5989b;
+  --border:#f0e2ee; --glow:none; --radius:18px;
+}
+body[data-theme="dark"]{
+  --bg:#1c1e22; --card:#26292f; --txt:#d8e2dc; --muted:#8a9490;
+  --accent:#39d98a; --accent2:#e0b341; --ok:#39d98a; --bad:#ff5c7a;
+  --border:#34383f; --glow:0 0 10px rgba(57,217,138,.35); --radius:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45}
+header{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+header h1{font-size:1.15rem;margin:0;flex:1;letter-spacing:.03em}
+.pawbtn{background:none;border:none;cursor:pointer;padding:.35rem;display:none}
+.pawbtn svg{width:26px;height:26px;fill:var(--accent)}
+nav{display:flex;gap:.3rem;flex-wrap:wrap}
+nav button{background:none;border:1px solid transparent;color:var(--muted);padding:.4rem .7rem;border-radius:8px;cursor:pointer;font-size:.9rem}
+nav button.active,nav button:hover{color:var(--txt);border-color:var(--border);background:var(--bg)}
+.theme{border:1px solid var(--border);background:var(--bg);color:var(--muted);border-radius:8px;padding:.35rem .55rem;cursor:pointer;font-size:.8rem}
+main{max-width:760px;margin:0 auto;padding:1rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:1rem;box-shadow:var(--glow)}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:.6rem 1.1rem;font-size:.95rem;cursor:pointer}
+.btn.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.ans{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.65rem .8rem;margin:.4rem 0;cursor:pointer;color:var(--txt);font-size:.93rem}
+.ans.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.ans.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--bg))}
+.ans.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--bg))}
+.tag{font-size:.75rem;color:var(--muted)}
+.kat{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:.15rem .6rem;font-size:.78rem;margin:.15rem .2rem .15rem 0;cursor:pointer}
+.kat.on{border-color:var(--accent);color:var(--accent)}
+.imgph{border:1px dashed var(--border);border-radius:10px;padding:.8rem;margin:.6rem 0;font-size:.85rem;color:var(--muted)}
+.imgph svg{width:70px;height:44px;fill:var(--muted);vertical-align:middle;margin-right:.6rem}
+.progress{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin:.5rem 0}
+.progress>div{height:100%;background:var(--accent);width:0}
+.big{font-size:2rem;font-weight:700}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+input[type=number]{width:5.5rem;padding:.45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--txt)}
+.timer{font-variant-numeric:tabular-nums;font-size:1.05rem}
+.statbar{height:10px;border-radius:5px;background:var(--bg);overflow:hidden;border:1px solid var(--border)}
+.statbar>div{height:100%;background:var(--ok)}
+.statbar>div.err{background:var(--bad)}
+@media(max-width:720px){
+  .pawbtn{display:block}
+  nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;padding:.5rem 1rem}
+  nav.open{display:flex}
+}
+</style>
+</head>
+<body data-theme="animus">
+<header>
+  <button class="pawbtn" id="burger" aria-label="Menü">
+    <svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.4"/><circle cx="12" cy="5" r="2.4"/><circle cx="17" cy="7" r="2.4"/><ellipse cx="12" cy="14.5" rx="5.5" ry="4.6"/></svg>
+  </button>
+  <h1>animus canis</h1>
+  <button class="theme" id="themeBtn">Design</button>
+  <nav id="nav">
+    <button data-v="start" class="active">Start</button>
+    <button data-v="blaettern">Blättern</button>
+    <button data-v="quiz">Quiz</button>
+    <button data-v="pruefung">Prüfung</button>
+    <button data-v="statistik">Statistik</button>
+    <button data-v="einstellungen">Einstellungen</button>
+  </nav>
+</header>
+<main id="app"></main>
+<script>
+const KAP={1:"Lernverhalten",2:"Hund und Öffentlichkeit",3:"Hundeverhalten",4:"Haltung, Pflege und Gesundheit",5:"Hund und Recht",6:"Mensch und Hund"};
+const FRAGEN=[
+{n:"1.1",k:1,q:"Was sind die wichtigsten Dinge im Umgang mit dem Hund?",f:["Härte."],r:["Geduld, Lob und Konsequenz.","der tägliche, häufige Kontakt."]},
+{n:"1.2",k:1,q:"Wann endet die Phase im Leben eines Hundes, in welcher der Hund die Fähigkeit besitzt zu lernen?",f:["Die Fähigkeit des Hundes zu lernen nimmt ab dem 5. Lebensjahr stetig ab und ist ab dem 8. Lebensjahr gänzlich erloschen."],r:["Der Hund lernt generell sein ganzes Leben lang."]},
+{n:"1.3",k:1,q:"Wann sollte ein Hund für eine erwünschte Verhaltensweise belohnt werden?",f:["Nach 5 Minuten.","Zeit spielt keine Rolle."],r:["sofort."]},
+{n:"1.4",k:1,q:"Wie kann man seinen Hund loben?",f:[],r:["Mit einer hohen, freundlichen Stimme.","Durch Streicheln.","Mit Spiel.","Mit Leckerli."]},
+{n:"1.5",k:1,q:"Wie kann man unerwünschte Verhaltensweisen unterbinden?",f:["Schlagen mit der Leine."],r:["Griff in den Nacken und nach unten drücken.","Ignorieren des Hundes.","Den Kontakt abbrechen.","Leinenruck."]},
+{n:"1.6",k:1,q:"Welche Gefahren birgt die Anwendung von angst- oder schmerzauslösenden Zurechtweisungen in der Hundeerziehung?",f:[],r:["Der Hund könnte sie mit etwas anderem als der unerwünschten Handlung verknüpfen.","Der ausgelöste Stress kann das Lernen blockieren.","Das Vertrauen des Hundes zu seinem Halter kann beeinträchtigt werden.","Zurechtweisungen können aggressives Verhalten gegenüber dem Halter auslösen.","Der Hund könnte die Lernsituation an sich mit Angst, Schmerz und Stress verknüpfen."]},
+{n:"1.7",k:1,q:"Welche Körpersignale können zeigen, dass ein Hund unter Stress steht?",f:["Stress ist eine menschliche Erscheinung. Hunde kennen keinen Stress."],r:["Hecheln kann auf Stress hindeuten.","Gähnen kann auf Stress hindeuten.","Sich kratzen kann auf Stress hindeuten.","Peniserektion kann auf Stress hindeuten.","Häufiges Über-die-Nase-Lecken kann auf Stress hindeuten."]},
+{n:"2.1",k:2,q:"Sie haben einen kleinen Hund, ein großer fremder Hund kommt Ihnen entgegen. Wie verhalten Sie sich?",f:["Ich nehme meinen Hund auf den Arm, um ihn aus der Gefahrenzone zu bringen.","Ich versuche den großen Hund zu verscheuchen."],r:["Ich setze ruhig mit meinem Hund den Weg fort. Notfalls weiche ich mit meinem Hund an kurzer Leine aus."]},
+{n:"2.2",k:2,q:"Wie sollte man sich verhalten, wenn der eigene Hund frei läuft und ein angeleinter Hund entgegenkommt?",f:["Man ruft schon von weitem, ob es sich um einen Rüden oder eine Hündin handelt. Wenn es ein Hund des anderen Geschlechts ist, kann man den eigenen Hund ruhig laufen lassen.","Wenn der eigene Hund nichts tut, kann man ihn problemlos laufen lassen.","Man ruft den anderen Hundebesitzern zu, dass sie ihren Hund losmachen sollen. Hunde sollten sich immer frei laufend begegnen, sonst reagieren sie eventuell aggressiv.","Wenn man einen Welpen oder Junghund hat, kann man ihn laufen lassen. Der andere Hund wird ihm nichts tun."],r:["Man nimmt den eigenen Hund unter Kontrolle, bis man mit den anderen Hundebesitzern geklärt hat, ob ein Kontakt zwischen den Hunden möglich ist."]},
+{n:"2.3",k:2,q:"Worin besteht das Risiko, wenn man zwei angeleinte Hunde Kontakt miteinander aufnehmen lässt?",f:["Wenn die Hunde sich kennen und schon mal zusammen gespielt haben, besteht kein Risiko."],r:["Wenn die Hunde umeinander herum laufen, können sich die Leinen verheddern. Die Gefahr einer Rauferei ist sehr groß."]},
+{n:"2.4",k:2,q:"Unter welchen Umständen kann ich meinen Hund in der Öffentlichkeit mit anderen Hunden spielen lassen?",f:["Wenn beide Hunde freundlich und gut sozialisiert sind, immer und überall.","In ausgewiesenen Hundeauslaufgebieten kann ich meinen Hund mit allen anderen Hunden spielen lassen."],r:["Wenn ich mit dem anderen Hundehalter abgeklärt habe, dass ein Spielkontakt erwünscht ist und beide Hunde frei laufen dürfen.","Niemals an der Straße, niemals an der Leine und niemals, wenn andere Menschen oder Tiere durch die spielenden Hunde belästigt oder gefährdet werden könnten."]},
+{n:"2.5",k:2,q:"Wie reagieren Sie, wenn Ihr Hund ängstliches Verhalten beim Anblick eines Gegenstandes zeigt?",f:["Man sollte den Hund beruhigen und ihm erklären, dass er keinen Grund hat sich vor dem Gegenstand zu fürchten.","Man sollte den Hund für seine Angst bestrafen, denn wenn der Hund schon vor unbedeutenden Gegenständen Angst hat, wie soll er dann seinen Besitzer in Gefahrensituationen beschützen?"],r:["Man sollte die Angst des Hundes in diesem Augenblick ignorieren.","Den Hund an kurzer Leine, mit Körperkontakt und ruhiger bestimmter Sprache, an dem Gegenstand vorbeiführen."]},
+{n:"2.6",k:2,q:"Sie gehen mit Ihrem freilaufenden Hund spazieren. Es kommt ein Spaziergänger entgegen, der bei Ihrem Auftauchen seinen Hund auf den Arm nimmt. Wie verhalten Sie sich?",f:["Den Hund weiter frei laufen lassen.","Den Hund zu sich rufen und im großen Bogen vorbeigehen."],r:["Den Hund sofort anleinen und an der Person vorbeiführen."]},
+{n:"2.7",k:2,q:"Ihr Hund reagiert ängstlich, weil ihn ein entgegenkommender fremder Hund auf dem Spaziergang drohend anbellt. Wie reagieren Sie?",f:["Ich tröste und beruhige ihn."],r:["Ich ignoriere sein Angstverhalten, da Trost die Angst verstärkt.","Ich lenke ihn durch Spiel ab."]},
+{n:"2.8",k:2,q:"Ihr Hund ist ein leidenschaftlicher Jäger. Sie gehen durch ein Feldflur, in dem es sehr viele Kaninchen gibt. Wie verhalten Sie sich?",f:["Sie lassen Ihren Hund frei laufen, da er, wenn er ein Kaninchen jagt, es so oder so nicht bekommt und sich nebenbei auch richtig austoben kann.","Sie lassen Ihren Hund frei laufen, da Sie wissen, dass Ihr Hund zwar jagt, aber niemals einem Kaninchen etwas tun würde."],r:["Sie nehmen Ihren Hund an die Leine, weil Sie kein Risiko eingehen wollen."]},
+{n:"2.9",k:2,q:"Warum sollten Sie verhindern, dass Ihr Hund andere Menschen anspringt?",f:["Bei großen Hunden sollte man das Anspringen verhindern, weil es gefährlich sein kann. Bei kleinen Hunden ist das nicht notwendig.","Kleine Hunde sollten nur dann niemanden anspringen, wenn sie schmutzig sind.","Man muss das Anspringen nur verhindern, wenn der Hund aggressiv ist."],r:["Das ist eine Frage der Rücksichtnahme gegenüber anderen Menschen. Niemand muss sich gegen seinen Willen von Hunden anspringen lassen.","Wenn Sie Ihrem Hund erlauben, Sie selbst, Familienangehörige oder Freunde anzuspringen, wird er nur schwer begreifen, dass das bei anderen Menschen unerwünscht sein kann."]},
+{n:"2.10",k:2,q:"Sie gehen mit Ihrem freilaufenden Hund spazieren. Wie verhalten Sie sich, wenn Menschen entgegenkommen?",f:["Mein Hund tut niemandem etwas, daher lasse ich ihn einfach weiterlaufen.","Ich nehme meinen Hund unter Kontrolle, indem ich ihn heranrufe und bei mir behalte, bis wir ein Stück an den Menschen vorbei sind.","Je nach Situation lasse ich den Hund Sitz oder Platz machen oder lasse ihn unmittelbar neben mir laufen, bis die Menschen vorbeigegangen sind. Mein Hund ist gut genug erzogen, um diese Übung in solchen Situationen sicher auszuführen.","Ich muss meinen Hund nur unter Kontrolle nehmen, wenn er häufig aggressiv reagiert oder schon mal jemanden gebissen hat.","Wenn Kinder entgegenkommen, nehme ich meinen Hund immer unter Kontrolle. Bei Erwachsenen ist das nicht nötig, wenn der Hund nicht aggressiv ist.","Da ich einen kleinen Hund habe, tue ich gar nichts. Große Hunde sollten dagegen grundsätzlich angeleint werden, wenn jemand entgegenkommt."],r:["Ich leine den Hund an."]},
+{n:"2.11",k:2,q:"Sie gehen mit Ihrem freilaufenden Hund spazieren. Ein Spaziergänger bleibt zögernd und verängstigt stehen. Wie verhalten Sie sich?",f:['Mit Kommando "Fuß" zügig vorbeigehen.',"Den Hund weiter frei laufen lassen und selbst normal weitergehen."],r:["Den Hund anleinen."]},
+{n:"2.12",k:2,q:"Sie gehen mit Ihrem Hund im Park spazieren. Ihnen kommt ein Jogger entgegen. Wie verhalten Sie sich?",f:["Sie lassen Ihren Hund laufen, da er Joggern nichts tut.",'Sie rufen Ihren Hund zu sich und lassen ihn "bei Fuß" gehen, bis der Jogger vorbei ist.',"Sie lassen Ihren Hund laufen, da er nur mit Joggern spielen will."],r:["Sie nehmen Ihren Hund an die Leine, bis der Jogger vorbei ist."]},
+{n:"2.13",k:2,q:"Ihnen kommt beim Spazierengehen mit Ihrem freilaufenden Hund eine Person mit Krückstock entgegen. Wie verhalten Sie sich?",f:["Sie rufen Ihren Hund zu sich, er soll beim Vorbeigehen in Ihrer Nähe bleiben.","Sie rufen Ihren Hund nicht, denn Sie wissen, dass er nichts tut, und können sich auf ihn verlassen.","Sie lassen Ihren Hund hingehen, da er solche Menschen kennenlernen soll."],r:["Sie nehmen Ihren Hund an die Leine."]},
+{n:"2.14",k:2,q:"Auf dem Spaziergang mit Ihrem Hund kommen Sie an einem Kinderspielplatz vorbei. Was tun Sie?",f:["Ich gehe ganz normal weiter, mein Hund ist sehr kinderlieb.","Wenn keine Kinder auf dem Spielplatz sind, lasse ich den Hund ruhig darüber laufen. Nur wenn dort Kinder spielen, nehme ich ihn unter Kontrolle, damit er die Kinder nicht eventuell erschreckt.","Ich habe einen kleinen Hund, der keine Gefahr für Kinder darstellt. Daher lasse ich ihn einfach laufen.","Mein Hund reagiert manchmal kritisch mit Kindern, indem er sie anbellt oder hinterher rennt. Daher nehme ich ihn vorsichtshalber frühzeitig unter Kontrolle und lasse ihn erst wieder laufen, wenn keine Gefahr mehr besteht, da er auf den Spielplatz laufen könnte."],r:["Ich nehme meinen Hund in der Nähe von Kinderspielplätzen immer an die Leine. Dadurch kann ich vermeiden, dass sich jemand belästigt oder gefährdet fühlt und dass der Hund sein Geschäft nicht auf dem Spielplatz erledigt."]},
+{n:"2.15",k:2,q:"Worauf ist zu achten, wenn Hunde mit Kindern zusammen sind?",f:["Wenn es sich um einen kinderlieben Hund handelt, muss man nichts weiter beachten.","Wenn ein Hund ein Kind anknurrt, muss man ihn dafür bestrafen."],r:["Es muss immer ein Erwachsener den Umgang zwischen Hund und Kind unter Kontrolle haben, um im Zweifelsfall eingreifen zu können.","Der Hund sollte einen Rückzugsplatz haben, der für Kinder tabu ist."]},
+{n:"2.16",k:2,q:"Ihr Hund läuft frei und Ihnen kommt eine Mutter mit einem Kleinkind an der Hand entgegen. Wie verhalten Sie sich?",f:["Da Ihr Hund gutmütig ist, lassen Sie ihn an dem Kind schnuppern.",'Sie beruhigen die Mutter und erklären: "Der tut nichts!".',"Weil Ihr Hund keine Kinder mag, bitten Sie die Mutter, das Kind auf den Arm zu nehmen."],r:["Sie rufen Ihren Hund zu sich und leinen ihn an."]},
+{n:"2.17",k:2,q:"Sie müssen mit Ihrem Hund in die Stadt gehen. Wie verhalten Sie sich?",f:["Sie lassen Ihren Hund frei, da auf ihn 100-prozentiger Verlass ist und er niemals auf die Straße gehen würde.","Sie lassen Ihren Hund frei, da er gerade in der Stadt mit anderen Hunden und Menschen Sozialkontakt haben soll.","Er muss nicht an der Leine laufen, da er absolut straßensicher ist."],r:["Sie nehmen Ihren Hund in der Stadt an die Leine."]},
+{n:"2.18",k:2,q:"Wohin dürfen Hunde generell nicht mitgenommen werden?",f:["Wohnung."],r:["Spielplatz.","Badeanstalt."]},
+{n:"2.19",k:2,q:"Sie haben einen Hund aus dem Tierheim geholt, über dessen Vorgeschichte das Tierheim keine Angaben machen kann. Wie sollten Sie sich in der nächsten Zeit bei Spaziergängen verhalten?",f:["Ich lasse den Hund direkt frei laufen, damit er seine neue Umwelt ganz frei und ungezwungen erkunden kann.","Ich gehe nur noch morgens ganz früh und abends spät mit dem Hund spazieren, damit ich niemandem unterwegs begegne."],r:["Ich führe den Hund nur an der Leine und lasse mir Zeit, den Hund und sein Verhalten in den verschiedensten Situationen kennenzulernen."]},
+{n:"2.20",k:2,q:"Wie verhalten Sie sich als verantwortungsbewusster Hundehalter in der Öffentlichkeit?",f:[],r:["Wenn mein Hund auf öffentlichen Wegen und Plätzen oder in Grünanlagen Kot absetzt, nehme ich den Kot grundsätzlich auf.","In der Nähe von Kinderspielplätzen, Sportflächen und Liegewiesen nehme ich den Hund an die Leine.","Ich nehme den Hund grundsätzlich an die Leine, wenn mir andere Menschen begegnen. Im Interesse der Hunde und meiner Mitmenschen möchte ich vermeiden, dass sich jemand durch meinen Hund belästigt oder bedroht fühlt.","Ich nehme den Hund grundsätzlich an die Leine und halte ausreichend Abstand, wenn mir ein Blinder mit seinem Führhund begegnet. Der Führhund könnte sonst bei seiner Arbeit gestört werden, und es könnte zu gefährlichen Situationen für den Blinden kommen.","Bei der Begegnung mit Reitern nehme ich meinen Hund grundsätzlich an die Leine, da manche Pferde auch bei ruhigen und freundlichen Hunden ängstlich reagieren und dadurch Unfälle entstehen können."]},
+{n:"2.21",k:2,q:"In welcher der folgenden Situationen sollte der Hund angeleint werden?",f:["Nur dort, wo Schilder stehen, dass Hunde an der Leine zu führen sind."],r:["In der Innenstadt und an stark befahrenen Straßen.","Im Treppenhaus und auf Zugangswegen von Mehrfamilienhäusern.","Grundsätzlich im Straßenverkehr.","Wenn man den Hund in Hotels, Restaurants oder Geschäfte mitnimmt."]},
+{n:"3.1",k:3,q:'"Der Hund ist wie der Wolf ein Rudeltier". Was bedeutet diese Tatsache für die Haltung des Hundes durch den Menschen?',f:["Der Mensch muss, wie der Alpharüde, seine Überlegenheit gegenüber den Rudelmitgliedern durch kämpferische Auseinandersetzungen beweisen.","Der Hund muss von fremden Hunden und Menschen möglichst ferngehalten werden, da er sie als rudelfremd erkennt und angreifen würde."],r:["Der Hund ist in der Lage, mit den Menschen in einer strukturierten Gemeinschaft zusammenzuleben.","Ein Hund braucht, um sich sicher zu fühlen, einen festen Platz in einer Gemeinschaft mit anderen Hunden oder Menschen."]},
+{n:"3.2",k:3,q:"Die naturgegebene Gesellschaftsform des Hundes im Rudel ist ...?",f:["... demokratisch aufgebaut.","... ohne jegliche Struktur."],r:["... hierarchisch aufgebaut."]},
+{n:"3.3",k:3,q:"Das Drohen ist deutlich zu erkennen an ...?",f:["... eingeklemmtem Schwanz.","... hoch erhobenem Kopf.","... Ohren nach vorne gestellt und nach oben gezogen."],r:["... starrem Fixieren des Gegners.","... hochgezogenen Lefzen und Zähneblecken im vorderen Schnauzenbereich (Mundwinkel sind rund)."]},
+{n:"3.4",k:3,q:"Woran ist die Stimmung des Hundes abzulesen?",f:[],r:["an den Nackenhaaren.","an den Ohren.","an der Rute.","an der Mimik."]},
+{n:"3.5",k:3,q:"Woran können Sie die Stimmung Ihres Hundes erkennen?",f:[],r:["an der Körperhaltung.","an Mimik, Gesichtsausdruck.","an Lautäußerungen."]},
+{n:"3.6",k:3,q:"Was bedeutet es, wenn ein Hund mit der Rute wedelt?",f:["Ein Hund, der mit der Rute wedelt, ist immer freundlich."],r:["Auch ein Hund, der mit der Rute wedelt, kann mir gefährlich werden.","Wedeln mit der Rute zeigt eine Erregung des Hundes an.","Wedeln mit der Rute muss immer im Zusammenhang mit dem Gesamtausdruck des Hundes beurteilt werden."]},
+{n:"3.7",k:3,q:"Was bedeutet es, wenn zwei Hunde voreinander stehen und sich in die Augen starren?",f:["Sie studieren die Gesichtszüge des jeweiligen anderen Hundes, um zu erkennen, ob sie ihn schon einmal getroffen haben.","Sie mögen sich."],r:["Sie bedrohen sich gegenseitig."]},
+{n:"3.8",k:3,q:"Sie treffen auf einen Hund, der folgende Mimik zeigt: Ohren eng an den Kopf gelegt, Zähne gebleckt bis in den Backenbereich, dabei spitze Mundwinkel. Dieser Hund zeigt:",f:["Angriffsdrohung.","Spielaufforderung."],r:["Abwehrdrohung."],img:"3.8"},
+{n:"3.9",k:3,q:"Sind unsere heutigen Hunde immer noch Raubtiere?",f:["Nein."],r:["Ja."]},
+{n:"3.10",k:3,q:"Wann können Hündinnen besonders aggressiv sein?",f:["bei Vollmond.","wenn sie keine Jungen bekommen dürfen."],r:["während der Läufigkeit.","wenn sie scheinträchtig sind.","wenn sie Welpen haben."]},
+{n:"3.11",k:3,q:"Kann aggressives Verhalten eines Hundes hormonell bedingt sein?",f:["Nein."],r:["Ja."]},
+{n:"3.12",k:3,q:"Ist aggressives Verhalten ein normales Verhalten?",f:["Nein."],r:["Ja."]},
+{n:"3.13",k:3,q:"Was sind mögliche Ursachen für aggressives Verhalten des Hundes?",f:["die regelmäßige Fütterung von rohem Fleisch."],r:["Angst.","Verteidigung von Futter, Territorium oder anderen Dingen.","Schlechte Aufzuchtbedingungen können mit ursächlich sein."]},
+{n:"3.14",k:3,q:"Unerwünschtes Aggressionsverhalten des Hundes ...?",f:["... kann durch gezielte Ausbildung völlig unterdrückt werden."],r:["... kann durch falsche Erziehung verstärkt werden.","... kann durch Zuchtselektion verstärkt werden."]},
+{n:"3.15",k:3,q:"In welcher der folgenden Situationen könnte ein Hund aggressiv reagieren?",f:[],r:["Begegnung zweier Hunde, die sich nicht kennen.","Versuch, dem Hund das Futter wegzunehmen.","Berührung des Hundes durch fremde Personen."]},
+{n:"3.16",k:3,q:"Kann Angst aggressives Verhalten auslösen?",f:["Nein."],r:["Ja."]},
+{n:"3.17",k:3,q:"Worin liegt das Gefahrenpotenzial eines extrem ängstlichen und menschenscheuen Hundes?",f:[],r:["Er könnte beißen.","Er könnte nicht kontrollierbar sein.","Er ist nicht berechenbar."]},
+{n:"3.18",k:3,q:'Wie beeinflussen "Zerr- und Rauf"-Spiele zwischen Mensch und Hund das Selbstbewusstsein des Hundes, wenn er regelmäßig als Sieger aus diesen Spielen hervorgeht?',f:["Minderung des Selbstbewusstseins.","Keinen Einfluss."],r:["Steigerung des Selbstbewusstseins."]},
+{n:"3.19",k:3,q:"Welche Aussagen sind bezüglich des Spiels zutreffend?",f:['Hunde spielen nur in ihrer "Spielphase", die etwa bis zur 20. Lebenswoche andauert.',"Junge Hunde sollten zur Vorbeuge von Hüft- und Ellbogenleiden pro Tag höchstens zehn Minuten spielen."],r:["Im Spiel werden körperliche und geistige Entwicklungen gefördert."]},
+{n:"3.20",k:3,q:"Wovon ist das Bewegungsbedürfnis eines Hundes abhängig?",f:["Nur von seiner Größe.","Von seinem Geschlecht."],r:["Von seinem Alter.","Von seiner Rasse- oder Typenzugehörigkeit.","Von der Fütterung."]},
+{n:"3.21",k:3,q:"Wenn ein Hund hechelt, kann es sein ...?",f:["... dass er hungrig ist."],r:["... dass er Stress hat.","... dass ihm heiß ist."]},
+{n:"3.22",k:3,q:"Ordnen Sie nachstehende Begriffe dem abgebildeten Kopfausdruck zu.",f:[],r:["ängstlich: Ohren nach hinten angelegt, Kopf abgesenkt.","aufmerksam: Ohren aufgerichtet, Kopf hoch, wacher Blick.","drohend: fixierender Blick, Lefzen angehoben, Zähne sichtbar."],img:"3.22"},
+{n:"3.23",k:3,q:"Ihr Hund zeigt untenstehende Mimik. Ihr Hund ist eher ...?",f:["... hat Angst.","... keines von allem, das Verhalten legt sich wieder."],r:["... aggressiv.","... droht.","... selbstbewusst."],img:"3.23"},
+{n:"3.24",k:3,q:"Ihr Hund zeigt untenstehende Mimik. Ihr Hund ist eher ...?",f:["... keines von allem, das Verhalten legt sich wieder.","... selbstbewusst."],r:["... aggressiv.","... hat Angst.","... droht."],img:"3.24"},
+{n:"3.25",k:3,q:"Wie erkennt man das ranghöchste Tier einer Gruppe?",f:["Es zeigt am häufigsten aggressive Verhaltensweisen.","Es geht geduckt, weicht anderen Tieren aus."],r:["Es zeigt selten aggressive Verhaltensweisen.","Es geht in aufrechter Körperhaltung und nimmt stets den direkten Weg zum Ziel.","Es beeinflusst das Verhalten der anderen am nachhaltigsten."]},
+{n:"3.26",k:3,q:"Welches Ausdrucksverhalten zeigt dieser Hund?",f:["Der Hund ist neutral bis aufmerksam.","Der Hund ist müde.","Der Hund ist unsicher und droht."],r:["Der Hund ist unterwürfig."],img:"3.26"},
+{n:"3.27",k:3,q:"Welches Ausdrucksverhalten zeigt dieser Hund?",f:["Der Hund ist müde.","Der Hund ist ängstlich und unterwürfig.","Der Hund ist unsicher und droht."],r:["Der Hund ist neutral bis aufmerksam."],img:"3.27"},
+{n:"3.28",k:3,q:"Welches Ausdrucksverhalten zeigt dieser Hund?",f:["Der Hund ist neutral bis aufmerksam.","Der Hund ist müde.","Der Hund ist unterwürfig."],r:["Der Hund ist unsicher und droht."],img:"3.28"},
+{n:"3.29",k:3,q:"Welches Ausdrucksverhalten zeigt dieser Hund?",f:["Der Hund ist neutral bis aufmerksam.","Der Hund ist aggressiv.","Der Hund ist unsicher und droht."],r:["Der Hund ist sehr ängstlich."],img:"3.29"},
+{n:"4.1",k:4,q:"Warum kann es sinnvoll sein, einen neu angeschafften Hund so bald wie möglich bei einem Tierarzt vorzustellen?",f:["Damit der Tierarzt anhand des Impfpasses prüfen kann, ob der Hund ausreichend Impfschutz hat und entwurmt ist.","Damit sich der Hund an den Tierarzt gewöhnt."],r:["Damit der Tierarzt prüfen kann, ob der Hund gesund ist."]},
+{n:"4.2",k:4,q:"Welche Vorsorgemaßnahmen sollten zur Gesunderhaltung des Hundes getroffen werden?",f:["Nur das teuerste Futter kaufen.","Den Hund jede Woche einmal mit Flohshampoo waschen."],r:["Den Hund beim Tierarzt untersuchen lassen und bei Bedarf entwurmen.","Den ganzen Körper des Hundes täglich genau anschauen, z. B. beim Bürsten oder Trockenreiben, und auf Veränderungen oder Parasitenbefall kontrollieren.","Darauf achten, dass der Hund nicht zu dick wird."]},
+{n:"4.3",k:4,q:"Woran erkenne ich, dass eine Hündin läufig ist?",f:["Die Hündin hat geschwollene Milchleisten."],r:["Die Scheide der Hündin ist vergrößert.","Die Hündin sondert aus der Scheide klares, schleimiges Sekret ab.","Die Hündin sondert aus der Scheide Blut ab.","Die Hündin ist besonders attraktiv für Rüden."]},
+{n:"4.4",k:4,q:"Was sollte man beachten, wenn man mit seiner läufigen Hündin spazieren geht?",f:["Bei der ersten Läufigkeit kann noch nichts passieren, die Hündin kann dann noch nicht tragend werden.","Wenn es zu einer Paarung kommt, muss man warten, bis der Rüde abgestiegen ist und die Hunde Hintern an Hintern stehen, dann kann man den Rüden wegziehen.","Die Hündin setzt während der Läufigkeit häufig Harnmarkierungen ab. Man sollte deshalb dort spazieren gehen, wo diese Marken von möglichst vielen Hunden gelesen werden können.","Man sollte immer einen Handstock oder Regenschirm dabei haben, um die Rüden von der Hündin fernhalten zu können.","Man sollte möglichst in Gegenden spazieren gehen, wo man wenig oder keine anderen Hunde trifft."],r:["Man sollte die Hündin während der gesamten Läufigkeit an der Leine führen.","Manche Hündinnen reagieren während der Läufigkeit anderen Hündinnen gegenüber aggressiver als sonst."]},
+{n:"4.5",k:4,q:"Können mit dem Hundekot Krankheiten übertragen werden?",f:["Nein."],r:["Ja."]},
+{n:"4.6",k:4,q:"Wie sollte ein Hund im Auto transportiert werden?",f:["Im Kofferraum einer Limousine.","Auf dem Beifahrersitz.","Auf dem Schoß.","Auf der Hutablage."],r:["Im gesicherten Heckraum eines Kombiwagens.","Mit Sicherheitsgurt für Hunde auf dem Rücksitz.","In einer Hundetransportbox."]},
+{n:"4.7",k:4,q:"Wann darf ich meinen Hund im Auto zurücklassen?",f:["Immer.","Ja, aber nur im Kofferraum."],r:["Nur für kurze Zeit, wenn es nicht zu warm oder zu kalt ist."]},
+{n:"4.8",k:4,q:"Sollte ein erwachsener Hund regelmäßig entwurmt werden?",f:["Ja.","Nein."],r:["Wenn ein Wurmbefall festgestellt wurde."]},
+{n:"4.9",k:4,q:"Können Zecken Krankheiten auf den Hund übertragen?",f:["Nein."],r:["Ja."]},
+{n:"4.10",k:4,q:"Muss ein Hund einen Tag in der Woche hungern?",f:["Ja."],r:["Nein."]},
+{n:"4.11",k:4,q:"Welche Vorsorgemaßnahmen sollten bei Geschwisterhaltung von verschieden geschlechtlichen Hunden getroffen werden?",f:["Es reicht, wenn man die Hunde während der Läufigkeit gut beaufsichtigt."],r:["Während der Läufigkeit der Hündin muss der Rüde getrennt untergebracht werden.","Eines oder beide Tiere können kastriert werden."]},
+{n:"4.12",k:4,q:"Warum ist es sinnvoll, den Hund durch Mikrochip kennzeichnen zu lassen?",f:["Nur reinrassige Hunde benötigen eine Kennzeichnung."],r:["Möglichkeit der genauen Identifizierung eines Hundes.","Weil es in bestimmten Fällen Vorschrift ist."]},
+{n:"4.13",k:4,q:"Welche der folgenden Punkte müssen für eine artgerechte Haltung des Hundes mindestens erfüllt sein?",f:[],r:["Regelmäßiger Kontakt zu Sozialpartnern (Hunde und/oder Menschen).","Ausreichend häufige und ausreichend lange Spaziergänge.","Ausreichende medizinische Versorgung im Krankheitsfall.","Jederzeit freier Zugang zu Wasser."]},
+{n:"4.14",k:4,q:"Wodurch können sich Hunde zu Problemhunden entwickeln?",f:["Ist immer angeboren."],r:["Durch isolierte Haltung ohne Sozialkontakte.","Durch falsche Ausbildung.","Durch Haltung an der Kette."]},
+{n:"5.1",k:5,q:"Werden einem Hund vorsätzlich aus Rohheit erhebliche Schmerzen oder Leiden zugefügt, handelt es sich um eine ...?",f:["... Ordnungswidrigkeit.","... zulässige Erziehungsmaßnahme."],r:["... Straftat."]},
+{n:"5.2",k:5,q:"Welche rechtlichen Vorschriften befassen sich mit der Haltung von Hunden?",f:["Tierschutzgesetz."],r:["Tierschutz-Hundeverordnung.","Hundehalterverordnung des jeweiligen Bundeslandes."]},
+{n:"5.3",k:5,q:"Gibt es Vorschriften für die Zwingerhaltung von Hunden?",f:["Nein, es bleibt dem Halter überlassen."],r:["Ja, die Tierschutz-Hundeverordnung."]},
+{n:"5.4",k:5,q:"Was geschieht im Falle eines Unfalls, wenn ein Hund ungesichert im Auto ist?",f:["Der Hund wird sich aufgrund seiner Größe und der Tatsache, dass er ja zumeist im Auto liegt, kaum verletzen.","Der ungesicherte Hund erleidet immer einen Schock und wird danach nie mehr in ein Auto springen."],r:["Der Hund kann aus dem Fahrzeug geschleudert werden und weglaufen.","Im Falle eines Unfalls erhält der Fahrer des Autos mit dem ungesicherten Hund häufig eine Teilschuld.","Nicht gesicherte Hunde stellen bei einem Autounfall ein erhebliches Verletzungsrisiko für die Insassen dar und können auch selber erheblich verletzt werden."]},
+{n:"5.5",k:5,q:"Sie gehen mit Ihrem nicht angeleinten Hund spazieren. Auf dem Fußweg kommt Ihnen eine fremde Person entgegen, die Ihr Hund aggressiv anfällt und ins Bein beißt. Müssen Sie mit strafrechtlichen Konsequenzen rechnen?",f:["Nein, so etwas kann immer mal passieren. Schließlich ist ein Hund nicht völlig berechenbar."],r:["Ja, ich muss mit einem Verfahren wegen fahrlässiger Körperverletzung rechnen."]},
+{n:"5.6",k:5,q:"Warum sollten Sie eine Tierhalterhaftpflichtversicherung abgeschlossen haben?",f:["Eine Haftpflichtversicherung braucht man eigentlich nicht; daran verdienen nur die Versicherungen.","Die Haftpflichtversicherung würde ja nur bei mir gelten. Wenn mein Kind mit dem Hund spazieren geht, ist sie sowieso nicht wirksam.","Das lohnt sich nicht, die Versicherung zahlt sowieso nicht, wenn der Hund nicht an der Leine gewesen ist."],r:["Jeder Hund kann Unfälle verursachen, und dabei können erhebliche Kosten entstehen.","Als Halter bin ich verpflichtet, für Schäden Dritter aufzukommen, die mein Hund verursacht hat."]},
+{n:"5.7",k:5,q:"Welche nachfolgenden Angaben sind Inhalt der Tierschutz-Hundeverordnung?",f:["Für ausreichende Frischluft und Lufttemperaturen zu sorgen, wenn der Hund ohne Aufsicht im Auto bleibt.","Hunde, die in der Wohnung gehalten werden, brauchen keinen Sozialkontakt.","Hunde, die im Freien gehalten werden, brauchen keinen gesonderten Auslauf."],r:["Bei starker Sonneneinstrahlung muss dem Hund ein schattiger, witterungsgeschützter Liegeplatz zur Verfügung stehen.","Dem Hund ist im Aufenthaltsbereich jederzeit Wasser und artgemäßes Futter in ausreichender Menge und Qualität zur Verfügung zu stellen."]},
+{n:"5.8",k:5,q:"Gesetzesverstöße beim Umgang mit Hunden werden durch die zuständigen Behörden geahndet; Beispiel hierfür sind:",f:[],r:["Eine Körperverletzung durch einen Hund kann eine Straftat sein und wird durch die Staatsanwaltschaft verfolgt.","Das Nichteinhalten der Bestimmungen der Hundehalter-Verordnung, z. B. einen gefährlichen Hund ohne Maulkorb zu führen, stellt eine Ordnungswidrigkeit dar und wird mit einer Geldbuße geahndet.","Sicherstellung von Hunden und Anordnung zur tierschutzgerechten Tötung durch die Behörde ist möglich."]},
+{n:"5.9",k:5,q:"Warum ist es sinnvoll, den Hund mit einem Mikrochip kennzeichnen zu lassen?",f:[],r:["Der Mikrochip ist unverwechselbar und kann nicht verändert werden.","Die Daten eines Mikrochips, der nach den ISO-Richtlinien gefertigt ist, sind auch im Ausland lesbar.","Die Kennzeichnung mit einem Mikrochip ist für den Hund im Vergleich zu einer Kennzeichnung mit einer Tätowierung unproblematischer.","Die Kennzeichnung mit einem Mikrochip ist im Vergleich zu einer Kennzeichnung mit einer Tätowierung sicherer, weil Tätowierungen mit der Zeit nicht mehr eindeutig lesbar sind.","Es ist in bestimmten Fällen Pflicht, einen Hund mit Mikrochip kennzeichnen zu lassen."]},
+{n:"6.1",k:6,q:"Welche der folgenden genannten Aktivitäten können Ihren Hund artgemäß beschäftigen?",f:["am fahrenden Auto laufen lassen."],r:["Suchspiele.","Apportspiele.","Hundesport / Breitensport / Agility / Ausbildung zum Rettungshund."]},
+{n:"6.2",k:6,q:"Sollte ein Hund lernen, allein zu bleiben?",f:["Nein, ein Hund muss das nicht lernen. Er sollte niemals allein gelassen werden.","Das lernt er sowieso, weil er ja im Zwinger gehalten wird.","Nein, Hunde schlafen sowieso, wenn sie allein sind."],r:["Ja, denn manchmal muss der Hund allein gelassen werden.","Ja, wenn man berufstätig ist und er deshalb täglich ein paar Stunden allein zu Hause bleiben muss."]},
+{n:"6.3",k:6,q:"Wie verhindern Sie, dass Ihr Hund an anderen Menschen hochspringt?",f:['Sie rufen jedes Mal "Pfui", wenn er an anderen Menschen hochspringt.'],r:["Sie leinen den Hund vorsorglich an.","Sie rufen den Hund rechtzeitig zu sich und belohnen ihn.","Sie bitten andere Hundebesitzer um Mithilfe, um Ihrem Hund das richtige Verhalten beizubringen (z. B. durch Wegdrehen)."]},
+{n:"6.4",k:6,q:"Warum springen Hunde in bestimmten Situationen Menschen an?",f:["Wenn ein Hund an einem Menschen hochspringt, will er ihn immer ins Gesicht beißen.","Wenn ein Hund an einem Menschen hochspringt, handelt es sich immer um eine Spielaufforderung.","Das ist ein Verhalten, das man Hunden nicht abgewöhnen kann."],r:["Es ist ein instinktives Verhalten, das sich vom Futterbetteln der Welpen ableitet, Begrüßungsverhalten darstellt und welches oft durch den Menschen verstärkt wird."]},
+{n:"6.5",k:6,q:"Beim Zusammensein von Hund und Kleinkindern sollte immer ...?",f:["... der Hund kontrolliert werden.","... keine besondere Beachtung nötig."],r:["... Hund und Kind kontrolliert werden."]},
+{n:"6.6",k:6,q:"Bei der Kommunikation mit dem Hund ist es wichtig, zu achten auf ...?",f:["... eine laute Stimme."],r:['... eindeutige Hörzeichen (z. B. "Sitz", "Platz").',"... unmissverständliche Körpersprache."]},
+{n:"6.7",k:6,q:"Ihr Hund läuft auf freiem Feld unangeleint, es besteht keine Gefahr. Nach mehrfachem Rufen kommt er nicht. Wie verhalten Sie sich?",f:["Sie laufen ihm nach und fangen ihn ein.","Sie rufen und drohen ihm Strafe an.","Wenn der Hund dann doch kommt, wird er stark geschimpft."],r:["Sie drehen sich um und gehen weg."]},
+{n:"6.8",k:6,q:"Das regelmäßige Anfassen und Streicheln des Hundes ist ...?",f:["... überflüssig.","... bei der Ausbildung des Hundes schädlich, da es diesen nur verweichlicht."],r:["... wichtig."]},
+{n:"6.9",k:6,q:"Ein fremder Hund kommt knurrend und bellend auf Sie zu. Wie verhalten Sie sich?",f:["Sie drehen sich um und rennen weg.","Sie starren den Hund in die Augen, um ihn abzuschrecken.","Sie drohen dem Hund mit erhobenen Armen.","Sie legen sich auf den Boden und warten auf Hilfe."],r:["Sie bleiben ruhig stehen, schauen dem Hund nicht direkt in die Augen und warten auf Hilfe mit den Armen und Händen auf dem Rücken."]},
+{n:"6.10",k:6,q:"Wie stellt man zwischen Mensch und Hund die Rangordnung klar?",f:["Man bestraft seinen Hund für jedes aggressive Verhalten.","Man geht regelmäßig zum Üben auf den Hundeplatz."],r:["Man achtet darauf, dass der Mensch derjenige ist, der zum größten Teil zu gemeinsamen Beschäftigungen auffordert.","Man maßregelt sofort jedes unerwünschte Verhalten richtig.","Man ignoriert aufdringliches Verhalten des Hundes weitgehend."]},
+{n:"6.11",k:6,q:"Hunde benötigen keine Rückzugsmöglichkeit (Zufluchtsort), da sie jederzeit engen Kontakt zu den Mitgliedern der Familie pflegen.",f:["stimmt.","hängt von der Rasse ab."],r:["stimmt nicht."]},
+{n:"6.12",k:6,q:"Was kann das Vertrauen des Hundes in seinen Halter gefährden?",f:["Zuviel Beschäftigung mit dem Hund."],r:["Ein körperliches Bestrafen des Hundes.","Ein Maßregeln des Hundes, wenn er in einer Situation unerwünschtes ängstliches Verhalten zeigt.","Der Gebrauch von Stachelhalsband.","Schütteln am Fell im Nacken.","Willkürlich wechselndes Verhalten in gleichen Situationen.","Einsatz von Elektroreizgeräten."]},
+{n:"6.13",k:6,q:"Warum sollte Ihr Hund einen festen Platz in der Wohnung haben?",f:["Damit Sie ihn zur Strafe dorthin schicken können."],r:["Damit er die Möglichkeit hat, sich zurückzuziehen.","Damit er sich dort geborgen und sicher fühlt."]},
+{n:"6.14",k:6,q:"Sie haben Ihren Hund erst seit kurzer Zeit und mussten ihn bisher noch nicht alleine lassen. Nun werden Sie bald halbtags berufstätig sein. Was tun Sie mit Ihrem Hund?",f:["Sie werden ihn an Ihrem ersten Arbeitstag alleine lassen und so ausprobieren, wie er reagiert.","Sie sperren Ihren Hund während Ihrer Abwesenheit ins Badezimmer, da er dort nichts kaputt machen kann."],r:["Sie beginnen bereits, bevor Sie wieder berufstätig sind, Ihren Hund in kleinen Schritten alleine zu lassen, damit er sich allmählich daran gewöhnt."]},
+{n:"6.15",k:6,q:"Warum ist es wichtig, mit seinem Hund zu üben, dass er sich überall anfassen lässt?",f:["Ein gesondertes Üben ist nicht notwendig, wenn der Hund richtig untergeordnet ist."],r:["Es fördert das gegenseitige Vertrauen.","Es erleichtert Pflegemaßnahmen.","Es fördert die Bindung zwischen Mensch und Hund.","Gesundheitliche Veränderungen können frühzeitig bemerkt werden."]},
+{n:"6.16",k:6,q:"Kreuzen Sie die richtige(n) Aussage(n) an:",f:["Hunde leben in einer Demokratie.","Hunde wollen gleichberechtigte Partner des Menschen sein.","Wenn der Hund alle Gehorsamsübungen kennt, merkt er sie sich ein Leben lang und muss sie nicht mehr üben."],r:["Hunde brauchen eine stabile Rangordnung.","Die meisten Hunde fühlen sich als Rangniedrigste sehr wohl, da es für sie in der Regel am stressfreiesten ist.","Regelmäßige Gehorsamsübungen machen dem Hund Spaß und festigen die Rangordnung."]},
+{n:"6.17",k:6,q:"Welche Verhaltensweisen könnten für einen fremden Hund bedrohlich wirken?",f:["Wenn Sie diskret zur Seite schauen."],r:["Wenn Sie sich lächelnd über ihn beugen.","Wenn Sie ihm direkt in die Augen schauen.","Ich lege dem Hund die Hand auf den Rücken und beuge mich über ihn."]},
+{n:"6.18",k:6,q:"Sie gehen mit Ihrem freilaufenden Hund im Park spazieren, es kommt ein Spaziergänger mit angeleintem Hund entgegen. Wie verhalten Sie sich?",f:["Den Hund weiter freilaufen lassen.","Den Hund weiter freilaufen lassen, aber nicht in die Nähe des anderen Hundes."],r:["Den Hund anleinen und den Entgegenkommenden mit Abstand passieren."]},
+{n:"6.19",k:6,q:"Sie haben einen kleinen Hund, ein großer fremder Hund kommt Ihnen unangeleint entgegen. Wie verhalten Sie sich?",f:["Hund auf den Arm nehmen, um ihn aus der Gefahrenzone zu bringen.","Versuchen, den großen Hund zu verscheuchen.","Mit Ihrem Hund Ihren Weg fortsetzen."],r:["Versuchen, ruhig auszuweichen; Blickkontakt der Hunde unterbinden durch Richtungswechsel."]}
+];
+const BILDER={
+"3.8":["Abwehrdrohung","Ohren eng angelegt, Zähne bis weit nach hinten sichtbar, spitze Mundwinkel, angespannte Gesichtsmuskulatur"],
+"3.22a":["ängstlich","Ohren nach hinten angelegt, Kopf abgesenkt, vorsichtiger Gesichtsausdruck"],
+"3.22b":["aufmerksam","Ohren aufgerichtet, Kopf hoch, Maul geschlossen, wacher Blick"],
+"3.22c":["drohend","Fixierender Blick, Lefzen angehoben, Zähne sichtbar, gespannte Mimik"],
+"3.23":["aggressiv / drohend / selbstbewusst","Aufgerichtete Ohren, erhobener Kopf, geöffnetes Maul mit sichtbaren Zähnen, direkter Blick"],
+"3.24":["aggressiv / ängstlich / drohend","Ohren deutlich angelegt, Zähne sichtbar bis weit nach hinten, Abwehrhaltung"],
+"3.26":["unterwürfig","Auf dem Rücken liegend, Bauch gezeigt, Pfoten angewinkelt"],
+"3.27":["neutral bis aufmerksam","Aufrechte Körperhaltung, Gewichtsverteilung ausgeglichen, Ohren nach vorn"],
+"3.28":["unsicher und droht","Körper nach vorne geneigt, Nackenhaare gestellt, Maul geöffnet, Drohverhalten bei Unsicherheit"],
+"3.29":["sehr ängstlich","Geduckte Körperhaltung, Kopf gesenkt, Ohren zurückgelegt, Körper klein gemacht"]};
+const THEMES=["animus","pastell","dark"];
+const PAW='<svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.4"/><circle cx="12" cy="5" r="2.4"/><circle cx="17" cy="7" r="2.4"/><ellipse cx="12" cy="14.5" rx="5.5" ry="4.6"/></svg>';
+
+let state={view:"start",kat:0,session:null,stats:JSON.parse(localStorage.getItem("ac_stats")||"{}"),
+  profile:JSON.parse(localStorage.getItem("ac_profile")||'{"anzahl":40,"minuten":60,"grenze":75}')};
+function saveStats(){localStorage.setItem("ac_stats",JSON.stringify(state.stats))}
+function saveProfile(){localStorage.setItem("ac_profile",JSON.stringify(state.profile))}
+const byNr=Object.fromEntries(FRAGEN.map(f=>[f.n,f]));
+function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function pool(){return state.kat?FRAGEN.filter(f=>f.k===state.kat):FRAGEN}
+function record(nr,ok){const s=state.stats[nr]||(state.stats[nr]={ok:0,err:0});ok?s.ok++:s.err++;saveStats()}
+function imgHtml(f){
+  if(!f.img)return"";
+  const ids=f.img==="3.22"?["3.22a","3.22b","3.22c"]:[f.img];
+  return ids.map(id=>{const[b,d]=BILDER[id]||["",""];
+    return `<figure style="margin:.6rem 0"><img src="assets/fragen/${id}.png" alt="${b}" style="max-width:100%;border-radius:10px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><figcaption class="imgph" style="display:none">${PAW}<b>${b}</b><br>${d}<br><span class="tag">Platzhalter – Bilddatei: assets/fragen/${id}.png</span></figcaption></figure>`;
+  }).join("");
+}
+function ansBtn(text,cls,onclick){const b=document.createElement("button");b.className="ans "+(cls||"");b.innerHTML=text;if(onclick)b.onclick=onclick;return b}
+function renderKat(){return Object.entries(KAP).map(([k,v])=>`<span class="kat ${state.kat==k?"on":""}" data-k="${k}">${v}</span>`).join('<span class="kat" data-k="0">Alle</span>').replace('<span class="kat 0','<span class="kat" data-k="0')}
+function setView(v){state.view=v;document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
+document.getElementById("burger").onclick=()=>document.getElementById("nav").classList.toggle("open");
+document.getElementById("nav").addEventListener("click",e=>{if(e.target.dataset.v){setView(e.target.dataset.v);document.getElementById("nav").classList.remove("open")}});
+let ti=0;document.getElementById("themeBtn").onclick=()=>{ti=(ti+1)%THEMES.length;document.body.dataset.theme=THEMES[ti];localStorage.setItem("ac_theme",THEMES[ti])};
+document.body.dataset.theme=localStorage.getItem("ac_theme")||"animus";
+const app=document.getElementById("app");
+app.addEventListener("click",e=>{
+  if(e.target.classList.contains("kat")){state.kat=+e.target.dataset.k;render()}
+});
+
+function render(){
+  if(state.view==="start")return vStart();
+  if(state.view==="blaettern")return vBlaettern();
+  if(state.view==="quiz")return vQuiz();
+  if(state.view==="pruefung")return vPruefung();
+  if(state.view==="statistik")return vStatistik();
+  if(state.view==="einstellungen")return vEinst();
+}
+function vStart(){
+  app.innerHTML=`<div class="card"><h2>Willkommen</h2>
+  <p>Lern-App zur Sachkundeprüfung nach § 11 TierSchG in Hessen (HundeVO, Fragenkatalog Stand 07.02.2003). ${FRAGEN.length} Fragen in ${Object.keys(KAP).length} Bereichen.</p>
+  <p class="tag">Dein Lernstand wird nur lokal in diesem Browser gespeichert.</p>
+  <div class="row">
+  <button class="btn" onclick="setView('blaettern')">Durchblättern</button>
+  <button class="btn sec" onclick="setView('quiz')">Quiz</button>
+  <button class="btn sec" onclick="setView('pruefung')">Prüfung simulieren</button>
+  </div></div>
+  <div class="card"><h3>Themenbereiche wählen</h3><p>${renderKat()}</p>
+  <p class="tag">Aktiv: ${state.kat?KAP[state.kat]:"Alle Bereiche"} (${pool().length} Fragen)</p></div>`;
+}
+function vBlaettern(){
+  const list=pool();
+  app.innerHTML=`<div class="card"><p>${renderKat()}</p><div id="card"></div></div>`;
+  let i=0;
+  const card=document.getElementById("card");
+  function draw(){
+    const f=list[i];
+    const sel=new Set();let checked=false;
+    card.innerHTML=`<p class="tag">Frage ${i+1} von ${list.length} · ${KAP[f.k]} · Nr. ${f.n}</p><h3>${f.q}</h3>${imgHtml(f)}<div id="ans"></div><div class="row" style="margin-top:.7rem">
+      <button class="btn sec" id="prev" ${i===0?"disabled":""}>Zurück</button>
+      <button class="btn" id="check">Prüfen</button>
+      <button class="btn sec" id="next" ${i===list.length-1?"disabled":""}>Weiter</button></div><div id="fb"></div>`;
+    const ansDiv=document.getElementById("ans");
+    const opts=shuffled([...f.r.map(t=>[t,1]),...f.f.map(t=>[t,0])]);
+    opts.forEach(([t,ok])=>{const b=ansBtn(t);b.onclick=()=>{if(checked)return;b.classList.toggle("sel");sel.has(t)?sel.delete(t):sel.add(t)};ansDiv.appendChild(b)});
+    document.getElementById("prev").onclick=()=>{i--;draw()};
+    document.getElementById("next").onclick=()=>{i++;draw()};
+    document.getElementById("check").onclick=()=>{
+      if(checked)return;checked=true;
+      const correct=sel.size===f.r.length&&[...sel].every(t=>f.r.includes(t));
+      record(f.n,correct);
+      [...ansDiv.children].forEach((b,idx)=>{const t=opts[idx][0];if(f.r.includes(t))b.classList.add("correct");else if(sel.has(t))b.classList.add("wrong")});
+      document.getElementById("fb").innerHTML=`<p style="color:${correct?"var(--ok)":"var(--bad)"}">${correct?"Richtig":"Nicht ganz"} – richtige Antworten: ${f.r.length}</p>`;
+    };
+  }
+  draw();
+}
+function vQuiz(){
+  const list=shuffled(pool());
+  app.innerHTML=`<div class="card"><p>${renderKat()}</p><div id="q"></div></div>`;
+  const box=document.getElementById("q");let i=0,score=0;
+  function draw(){
+    if(i>=list.length){box.innerHTML=`<h3>Fertig</h3><p class="big">${score} / ${list.length}</p><button class="btn" onclick="setView('quiz')">Neue Runde</button>`;return}
+    const f=list[i];const sel=new Set();let checked=false;
+    box.innerHTML=`<p class="tag">Frage ${i+1} / ${list.length} · ${KAP[f.k]}</p><h3>${f.q}</h3>${imgHtml(f)}<div id="ans"></div><div class="row"><button class="btn" id="check">Prüfen</button></div><div id="fb"></div>`;
+    const ansDiv=document.getElementById("ans");
+    const opts=shuffled([...f.r.map(t=>[t,1]),...f.f.map(t=>[t,0])]);
+    opts.forEach(([t])=>{const b=ansBtn(t);b.onclick=()=>{if(checked)return;b.classList.toggle("sel");sel.has(t)?sel.delete(t):sel.add(t)};ansDiv.appendChild(b)});
+    document.getElementById("check").onclick=()=>{
+      if(checked)return;checked=true;
+      const correct=sel.size===f.r.length&&[...sel].every(t=>f.r.includes(t));
+      if(correct)score++;record(f.n,correct);
+      [...ansDiv.children].forEach((b,idx)=>{const t=opts[idx][0];if(f.r.includes(t))b.classList.add("correct");else if(sel.has(t))b.classList.add("wrong")});
+      document.getElementById("fb").innerHTML=`<p style="color:${correct?"var(--ok)":"var(--bad)"}">${correct?"Richtig":"Leider falsch"}</p><button class="btn" id="nx">Weiter</button>`;
+      document.getElementById("nx").onclick=()=>{i++;draw()};
+    };
+  }
+  draw();
+}
+function vPruefung(){
+  const p=state.profile;
+  if(!state.session||state.session.done){
+    app.innerHTML=`<div class="card"><h2>Prüfung simulieren</h2>
+    <p>Profil Hessen: ${p.anzahl} Fragen, ${p.minuten} Minuten, bestanden ab ${p.grenze} %. Änderbar unter Einstellungen.</p>
+    <button class="btn" id="go">Prüfung starten</button></div>`;
+    document.getElementById("go").onclick=()=>{
+      const list=shuffled(pool()).slice(0,Math.min(p.anzahl,pool().length));
+      state.session={list,i:0,answers:{},end:Date.now()+p.minuten*60000,done:false,tick:null};render();
+    };
+    return;
+  }
+  const s=state.session;
+  if(s.done)return showResult();
+  function tick(){
+    const rest=s.end-Date.now();
+    if(rest<=0){finish();return}
+    const el=document.getElementById("timer");
+    if(el)el.textContent=Math.floor(rest/60000)+":"+String(Math.floor(rest/1000)%60).padStart(2,"0");
+  }
+  const f=s.list[s.i];const sel=s.answers[f.n]||new Set();
+  app.innerHTML=`<div class="card"><div class="row"><span class="tag">Frage ${s.i+1} / ${s.list.length}</span><span class="timer" id="timer"></span></div>
+  <div class="progress"><div style="width:${s.i/s.list.length*100}%"></div></div>
+  <h3>${f.q}</h3>${imgHtml(f)}<div id="ans"></div>
+  <div class="row"><button class="btn sec" id="prev" ${s.i===0?"disabled":""}>Zurück</button>
+  <button class="btn" id="next">${s.i===s.list.length-1?"Auswerten":"Weiter"}</button></div></div>`;
+  const ansDiv=document.getElementById("ans");
+  const opts=shuffled([...f.r.map(t=>[t,1]),...f.f.map(t=>[t,0])]);
+  opts.forEach(([t])=>{const b=ansBtn(t);if(sel.has(t))b.classList.add("sel");b.onclick=()=>{sel.has(t)?sel.delete(t):sel.add(t);s.answers[f.n]=sel;b.classList.toggle("sel")};ansDiv.appendChild(b)});
+  document.getElementById("prev").onclick=()=>{s.i--;render()};
+  document.getElementById("next").onclick=()=>{if(s.i===s.list.length-1)finish();else{s.i++;render()}};
+  tick();clearInterval(s.tick);s.tick=setInterval(tick,500);
+  function finish(){
+    clearInterval(s.tick);s.done=true;
+    let correct=0;
+    s.list.forEach(q=>{const sel=s.answers[q.n]||new Set();
+      const ok=sel.size===q.r.length&&[...sel].every(t=>q.r.includes(t));
+      if(ok)correct++;record(q.n,ok)});
+    s.result={correct,total:s.list.length};
+    showResult();
+  }
+  function showResult(){
+    const s=state.session,r=s.result,p=state.profile;
+    const pct=Math.round(r.correct/r.total*100);const ok=pct>=p.grenze;
+    app.innerHTML=`<div class="card"><h2>Ergebnis</h2><p class="big">${r.correct} / ${r.total} (${pct} %)</p>
+    <p style="color:${ok?"var(--ok)":"var(--bad)"};font-size:1.2rem">${ok?"Bestanden":"Nicht bestanden"} (Grenze: ${p.grenze} %)</p>
+    <div class="row"><button class="btn" onclick="state.session=null;setView('pruefung')">Neue Prüfung</button>
+    <button class="btn sec" onclick="setView('statistik')">Statistik ansehen</button></div></div>`;
+  }
+}
+function vStatistik(){
+  const rows=Object.keys(KAP).map(k=>{
+    const fs=FRAGEN.filter(f=>f.k==k);
+    const seen=fs.filter(f=>state.stats[f.n]);
+    const ok=fs.filter(f=>state.stats[f.n]&&state.stats[f.n].ok>state.stats[f.n].err).length;
+    return `<p><b>${KAP[k]}</b> – ${seen.length}/${fs.length} bearbeitet, ${ok} sicher<br>
+    <span class="statbar"><div style="width:${fs.length?ok/fs.length*100:0}%"></div></span></p>`;
+  }).join("");
+  const fehler=FRAGEN.filter(f=>state.stats[f.n]&&state.stats[f.n].err>state.stats[f.n].ok);
+  app.innerHTML=`<div class="card"><h2>Statistik</h2>${rows||"<p>Noch keine Daten.</p>"}</div>
+  <div class="card"><h3>Wiederholen (${fehler.length})</h3>
+  ${fehler.length?`<p class="tag">${fehler.map(f=>f.n).join(", ")}</p><button class="btn" id="rep">Fehlerfragen üben</button>`:"<p class='tag'>Keine Häufungen – weiter so.</p>"}</div>
+  <div class="card"><button class="btn sec" id="reset">Lernstand zurücksetzen</button></div>`;
+  if(document.getElementById("rep"))document.getElementById("rep").onclick=()=>{
+    state.session=null;state._rep=shuffled(fehler);setView("quiz");
+  };
+  document.getElementById("reset").onclick=()=>{if(confirm("Wirklich allen Lernstand löschen?")){state.stats={};saveStats();render()}};
+}
+function vEinst(){
+  const p=state.profile;
+  app.innerHTML=`<div class="card"><h2>Einstellungen – Prüfungsprofil Hessen</h2>
+  <div class="row"><label>Anzahl Fragen <input type="number" id="anz" value="${p.anzahl}" min="5" max="99"></label>
+  <label>Minuten <input type="number" id="min" value="${p.minuten}" min="5" max="180"></label>
+  <label>Bestehensgrenze % <input type="number" id="gren" value="${p.grenze}" min="50" max="100"></label></div>
+  <p class="tag">Weitere Bundesländer oder Anbieter lassen sich später als zusätzliche Profile ergänzen.</p>
+  <button class="btn" id="save">Speichern</button></div>`;
+  document.getElementById("save").onclick=()=>{
+    state.profile={anzahl:+document.getElementById("anz").value,minuten:+document.getElementById("min").value,grenze:+document.getElementById("gren").value};
+    saveProfile();setView("start");
+  };
+}
+render();
+</script>
+</body>
+</html>
